@@ -1,12 +1,22 @@
 import SafeScreen from "@/components/SafeArea";
-import { COLORS, THEMES } from "@/themes";
+import { COLORS, PADDINGS, SIZE, THEMES } from "@/themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { CirclePlus, House } from "lucide-react-native";
+import { CirclePlus, House, ShoppingCart } from "lucide-react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 // Create a client
 const queryClient = new QueryClient();
+
+const CustomHeader = () => (
+  <View style={headerStyles.header}>
+    <ShoppingCart size={SIZE.xl} color={COLORS.primary} />
+    <Text style={headerStyles.headerTitle}>
+      POSGRESTORE
+    </Text>
+  </View>
+);
 
 export default function RootLayout() {
   return (
@@ -14,7 +24,8 @@ export default function RootLayout() {
       <SafeScreen>
         <StatusBar style={COLORS === THEMES.dark ? "light" : "dark"} /> 
         <Tabs screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: () => <CustomHeader />,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.muted,
         animation: "fade",
@@ -40,3 +51,18 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
+
+const headerStyles = StyleSheet.create({
+  header: {
+    gap: PADDINGS.sm,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: PADDINGS.md,
+    backgroundColor: COLORS.background,
+  },
+  headerTitle: {
+    color: COLORS.primary,
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+});

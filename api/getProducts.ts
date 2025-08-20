@@ -12,7 +12,6 @@ export interface Product {
 export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const response = await api.get("/");
-    console.log("API Response:", response.data);
     
     if (response.data && response.data.success && response.data.data) {
       return response.data.data;

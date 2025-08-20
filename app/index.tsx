@@ -1,6 +1,6 @@
 import { Product, useGetProducts } from "@/api/getProducts";
 import { COLORS, PADDINGS, RADIUS, SIZE } from "@/themes";
-import { ShoppingCart, SquarePen, Trash } from "lucide-react-native";
+import { SquarePen, Trash } from "lucide-react-native";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
@@ -55,13 +55,6 @@ export default function Index() {
 
   return (
     <View style={style.base}>
-
-      <View style={style.header}>
-          <ShoppingCart size={SIZE.xl} color={COLORS.primary} />
-          <Text style={style.headerTitle}>
-            POSGRESTORE
-          </Text>
-      </View>
       
       <FlatList
         data={products}
@@ -69,6 +62,7 @@ export default function Index() {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingHorizontal: PADDINGS.md }}
         showsVerticalScrollIndicator={false}
+
       />
     </View>
   );
@@ -82,17 +76,6 @@ const style = StyleSheet.create({
   centered: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  header: {
-    gap: PADDINGS.sm,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: PADDINGS.md,
-  },
-  headerTitle: {
-    color: COLORS.primary,
-    fontSize: 24,
-    fontWeight: "bold",
   },
   text: {
     color: COLORS.foreground,
