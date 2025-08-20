@@ -30,3 +30,26 @@ export const useGetProducts = () => {
     queryFn: fetchProducts,
   });
 };
+
+export const fetchProductById = async (id: string): Promise<Product> => {
+  try {
+    const response = await api.get(`/${id}`);
+    
+    if (response.data && response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    
+    throw new Error("Product not found");
+  } catch (error) {
+    console.error("Fetch product by ID error:", error);
+    throw error;
+  }
+};
+
+export const useGetProductById = (id: string) => {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: () => fetchProductById(id),
+    enabled: !!id, // Only run query if id exists
+  });
+};

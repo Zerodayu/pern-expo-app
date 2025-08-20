@@ -1,5 +1,6 @@
 import { Product, useGetProducts } from "@/api/getProducts";
 import { COLORS, PADDINGS, RADIUS, SIZE } from "@/themes";
+import { Link } from "expo-router";
 import { SquarePen, Trash } from "lucide-react-native";
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -42,9 +43,11 @@ export default function Index() {
       </Text>
       
       <View style={style.cardFooter}>
-        <TouchableOpacity style={style.cardBtn}>
-          <SquarePen size={SIZE.md} color={COLORS.foreground} />
-        </TouchableOpacity>
+        <Link href={`/${item.id}`} asChild>
+          <TouchableOpacity style={style.cardBtn}>
+            <SquarePen size={SIZE.md} color={COLORS.foreground} />
+          </TouchableOpacity>
+        </Link>
 
         <TouchableOpacity style={style.cardBtn}>
           <Trash size={SIZE.md} color={COLORS.destructive} />

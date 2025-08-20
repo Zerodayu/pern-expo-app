@@ -1,3 +1,4 @@
+import { useGetProducts } from "@/api/getProducts";
 import SafeScreen from "@/components/SafeArea";
 import { COLORS, PADDINGS, SIZE, THEMES } from "@/themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,49 +11,67 @@ import { StyleSheet, Text, View } from "react-native";
 const queryClient = new QueryClient();
 
 const CustomHeader = () => (
-  <View style={headerStyles.header}>
+  <View style={styles.header}>
     <ShoppingCart size={SIZE.xl} color={COLORS.primary} />
-    <Text style={headerStyles.headerTitle}>
+    <Text style={styles.headerTitle}>
       POSGRESTORE
     </Text>
   </View>
 );
+
+const TabsLayout = () => {
+  const { data: products } = useGetProducts();
+  const productCount = products?.length || 0;
+
+  return (
+    <Tabs screenOptions={{
+      headerShown: true,
+      header: () => <CustomHeader />,
+      tabBarActiveTintColor: COLORS.primary,
+      tabBarInactiveTintColor: COLORS.muted,
+      animation: "shift",
+      tabBarStyle: {
+        backgroundColor: COLORS.background,
+        borderTopWidth: 1,
+        borderColor: COLORS.secondary,
+        borderStyle: "solid",
+      }
+    }}>
+      <Tabs.Screen name="index"
+        options={{
+          title: "Products",
+          tabBarBadge: productCount > 0 ? productCount : undefined,
+          tabBarBadgeStyle: styles.badge,
+          tabBarIcon: ({ color, size }) => <House size={size} color={color} />,
+        }} />
+
+      <Tabs.Screen name="add"
+        options={{
+          title: "Add",
+          tabBarIcon: ({ color, size }) => <CirclePlus size={size} color={color} />,
+        }} />
+
+      <Tabs.Screen name="[id]"
+        options={{
+          title: "Edit",
+          href: null,
+        }} />
+    </Tabs>
+  );
+};
 
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeScreen>
         <StatusBar style={COLORS === THEMES.dark ? "light" : "dark"} /> 
-        <Tabs screenOptions={{
-        headerShown: true,
-        header: () => <CustomHeader />,
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.muted,
-        animation: "fade",
-        tabBarStyle: {
-          backgroundColor: COLORS.background,
-          borderTopWidth: 1,
-          borderColor: COLORS.secondary,
-          borderStyle: "solid",
-        }
-      }}>
-          <Tabs.Screen name="index"
-          options={{
-            title: "Products",
-            tabBarIcon: ({ color, size }) => <House size={size} color={color} />,
-          }} />
-          <Tabs.Screen name="add"
-          options={{
-            title: "Add",
-            tabBarIcon: ({ color, size }) => <CirclePlus size={size} color={color} />,
-          }} />
-        </Tabs>
+        <TabsLayout />
       </SafeScreen>
     </QueryClientProvider>
   );
 }
 
-const headerStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   header: {
     gap: PADDINGS.sm,
     flexDirection: "row",
@@ -65,4 +84,9 @@ const headerStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
+  badge: {
+    backgroundColor: COLORS.foreground,
+    color: COLORS.primary,
+    fontFamily: "monospace"
+  }
 });
