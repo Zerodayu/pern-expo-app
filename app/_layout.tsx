@@ -1,29 +1,42 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import SafeScreen from "@/components/SafeArea";
+import { COLORS, THEMES } from "@/themes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { CirclePlus, House } from "lucide-react-native";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Create a client
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeScreen>
+        <StatusBar style={COLORS === THEMES.dark ? "light" : "dark"} /> 
+        <Tabs screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.muted,
+        animation: "fade",
+        tabBarStyle: {
+          backgroundColor: COLORS.background,
+          borderTopWidth: 1,
+          borderColor: COLORS.secondary,
+          borderStyle: "solid",
+        }
+      }}>
+          <Tabs.Screen name="index"
+          options={{
+            title: "Products",
+            tabBarIcon: ({ color, size }) => <House size={size} color={color} />,
+          }} />
+          <Tabs.Screen name="add"
+          options={{
+            title: "Add",
+            tabBarIcon: ({ color, size }) => <CirclePlus size={size} color={color} />,
+          }} />
+        </Tabs>
+      </SafeScreen>
+    </QueryClientProvider>
   );
 }
