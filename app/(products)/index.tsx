@@ -1,11 +1,36 @@
+import { useDeleteProduct } from "@/api/delProducts";
 import { Product, useGetProducts } from "@/api/getProducts";
 import { COLORS, PADDINGS, RADIUS, SIZE } from "@/themes";
 import { Link } from "expo-router";
 import { SquarePen, Trash } from "lucide-react-native";
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const { data: products, isLoading, error } = useGetProducts();
+  const deleteProductMutation = useDeleteProduct();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{ id: number; name: string } | null>(null);
+
+  const handleDeletePress = (productId: number, productName: string) => {
+    setSelectedProduct({ id: productId, name: productName });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedProduct) {
+      deleteProductMutation.mutate(selectedProduct.id.toString(), {
+        onSuccess: () => {
+          Alert.alert("Success", "Product deleted successfully!");
+        },
+        onError: (error) => {
+          Alert.alert("Error", "Failed to delete product. Please try again.");
+        },
+      });
+      setShowDeleteModal(false);
+      setSelectedProduct(null);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -49,7 +74,11 @@ export default function Index() {
           </TouchableOpacity>
         </Link>
 
-        <TouchableOpacity style={style.cardBtn}>
+        <TouchableOpacity 
+          style={style.cardBtn}
+          onPress={() => handleDeletePress(item.id, item.name)}
+          disabled={deleteProductMutation.isPending}
+        >
           <Trash size={SIZE.md} color={COLORS.destructive} />
         </TouchableOpacity>
       </View>
@@ -58,15 +87,50 @@ export default function Index() {
 
   return (
     <View style={style.base}>
-      
       <FlatList
         data={products}
         renderItem={renderProduct}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingHorizontal: PADDINGS.md }}
         showsVerticalScrollIndicator={false}
-
       />
+
+      {/* Custom Delete Modal */}
+      <Modal
+        visible={showDeleteModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowDeleteModal(false)}
+      >
+        <View style={style.modalOverlay}>
+          <View style={style.modalContent}>
+            <Text style={style.modalTitle}>Delete Product</Text>
+            <Text style={style.modalMessage}>
+              Are you sure you want to delete this product? This action cannot be undone.
+            </Text>
+            <Text style={style.modalProduct}>
+              Product name: {selectedProduct?.name}
+            </Text>
+            
+            <View style={style.modalButtons}>
+              <Pressable 
+                style={[style.modalButton, style.cancelButton]} 
+                onPress={() => setShowDeleteModal(false)}
+              >
+                <Text style={style.cancelButtonText}>Cancel</Text>
+              </Pressable>
+              
+              <Pressable 
+                style={[style.modalButton, style.deleteButton]} 
+                onPress={confirmDelete}
+                disabled={deleteProductMutation.isPending}
+              >
+                <Text style={style.deleteButtonText}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -126,5 +190,65 @@ const style = StyleSheet.create({
     justifyContent: "center",
     gap: PADDINGS.sm,
     paddingTop: PADDINGS.md,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: COLORS.background,
+    padding: PADDINGS.md,
+    borderRadius: RADIUS.xl,
+    width: '90%',
+  },
+  modalTitle: {
+    fontSize: SIZE.md,
+    fontFamily: "monospace",
+    fontWeight: 'bold',
+    color: COLORS.foreground,
+    marginBottom: PADDINGS.md,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: SIZE.sm,
+    color: COLORS.foreground,
+    marginBottom: PADDINGS.md,
+    textAlign: 'center',
+  },
+  modalProduct: {
+    fontSize: SIZE.sm,
+    color: COLORS.foreground,
+    fontStyle: 'italic',
+    marginBottom: PADDINGS.md,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: PADDINGS.xs,
+  },
+  modalButton: {
+    flex: 1,
+    padding: PADDINGS.sm,
+    borderRadius: RADIUS.lg,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: COLORS.muted,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+  },
+  deleteButton: {
+    backgroundColor: COLORS.destructive,
+  },
+  cancelButtonText: {
+    color: COLORS.foreground,
+    fontWeight: '600',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: '600',
   },
 });

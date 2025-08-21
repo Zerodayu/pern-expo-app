@@ -1,7 +1,7 @@
 import { useGetProductById } from '@/api/getProducts';
 import { useUpdateProduct } from '@/api/putProduct';
 import { COLORS, PADDINGS, RADIUS, SIZE } from '@/themes';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -14,14 +14,34 @@ export default function ProductDetail () {
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
   const [url, setUrl] = useState('');
+  
+  // Store original values for comparison
+  const [originalValues, setOriginalValues] = useState({
+    name: '',
+    price: '',
+    image: ''
+  });
 
   useEffect(() => {
     if (product) {
-      setProductName(product.name);
-      setPrice(product.price.toString());
-      setUrl(product.image);
+      const values = {
+        name: product.name,
+        price: product.price.toString(),
+        image: product.image
+      };
+      
+      setProductName(values.name);
+      setPrice(values.price);
+      setUrl(values.image);
+      setOriginalValues(values);
     }
   }, [product]);
+
+  // Check if any changes have been made
+  const hasChanges = 
+    productName !== originalValues.name ||
+    price !== originalValues.price ||
+    url !== originalValues.image;
 
   const handleUpdateProduct = async () => {
     // Validation
@@ -122,10 +142,17 @@ export default function ProductDetail () {
           />
         </View>
 
+        <TouchableOpacity style={styles.buttonSecondary} onPress={() => router.back()}>
+          <Text style={styles.buttonText2}>Cancel</Text>
+        </TouchableOpacity> 
+
         <TouchableOpacity 
-          style={[styles.button, updateProductMutation.isPending && styles.buttonDisabled]} 
+          style={[
+            styles.buttonPrimary, 
+            (updateProductMutation.isPending || !hasChanges) && styles.buttonDisabled
+          ]} 
           onPress={handleUpdateProduct}
-          disabled={updateProductMutation.isPending}
+          disabled={updateProductMutation.isPending || !hasChanges}
         >
           {updateProductMutation.isPending ? (
             <ActivityIndicator size="small" color={COLORS.background} />
@@ -181,13 +208,27 @@ const styles = StyleSheet.create({
     color: COLORS.foreground,
     backgroundColor: COLORS.background,
   },
-  button: {
+  buttonPrimary: {
     backgroundColor: COLORS.primary,
-    paddingVertical: PADDINGS.md,
-    paddingHorizontal: PADDINGS.lg,
+    paddingVertical: PADDINGS.sm,
+    borderRadius: RADIUS.full,
+    marginTop: PADDINGS.sm,
+    alignItems: 'center',
+  },
+  buttonSecondary: {
+    backgroundColor: COLORS.background,
+    paddingVertical: PADDINGS.sm,
+    outlineWidth: 1,
+    outlineColor: COLORS.primary,
     borderRadius: RADIUS.full,
     marginTop: PADDINGS.xl,
     alignItems: 'center',
+  },
+  buttonText2: {
+    color: COLORS.foreground,
+    fontSize: SIZE.sm,
+    fontFamily: "monospace",
+    fontWeight: "bold",
   },
   buttonDisabled: {
     opacity: 0.6,
