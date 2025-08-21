@@ -29,7 +29,7 @@ const TabsLayout = () => {
       header: () => <CustomHeader />,
       tabBarActiveTintColor: COLORS.primary,
       tabBarInactiveTintColor: COLORS.muted,
-      animation: "shift",
+      animation: "fade",
       tabBarStyle: {
         backgroundColor: COLORS.background,
         borderTopWidth: 1,
