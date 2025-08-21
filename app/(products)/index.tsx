@@ -67,7 +67,7 @@ export default function Index() {
           }}
         />
         <View style={style.fallbackIcon}>
-          <Pic size={SIZE.xxl} color={COLORS.secondary} />
+          <Pic size={SIZE.xxl} color={COLORS.secondary} style={style.fallbackIcon} />
         </View>
       </View>
 
@@ -168,7 +168,7 @@ const style = StyleSheet.create({
     position: 'relative',
     width: "100%",
     height: 150,
-    backgroundColor: COLORS.secondary + "20",
+    backgroundColor: "transparent",
     borderRadius: RADIUS.lg,
     justifyContent: 'center',
     alignItems: 'center',
