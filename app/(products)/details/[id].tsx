@@ -94,7 +94,7 @@ export default function ProductDetail () {
       contentContainerStyle={{flexGrow: 1}}
       enableAutomaticScroll={true}
       enableOnAndroid={true}
-      extraScrollHeight={120}
+      extraScrollHeight={150}
     >
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Product Details</Text>

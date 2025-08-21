@@ -12,7 +12,7 @@ const dark = {
 
 const light = {
   primary: "#4caf50",
-  secondary: "#3e4a3d",
+  secondary: "#7a8a79ff",
   background: "#ffffff",
   foreground: "#09090b",
   muted: "#f4f4f5",

@@ -117,7 +117,7 @@ export default function Index() {
               Are you sure you want to delete this product? This action cannot be undone.
             </Text>
             <Text style={style.modalProduct}>
-              Product name: {selectedProduct?.name}
+              {selectedProduct?.name}
             </Text>
             
             <View style={style.modalButtons}>
@@ -245,6 +245,7 @@ const style = StyleSheet.create({
     fontSize: SIZE.sm,
     color: COLORS.foreground,
     fontStyle: 'italic',
+    fontWeight: "bold",
     marginBottom: PADDINGS.md,
     textAlign: 'center',
   },
