@@ -37,7 +37,7 @@ const TabsLayout = () => {
         borderStyle: "solid",
       }
     }}>
-      <Tabs.Screen name="index"
+      <Tabs.Screen name="(products)"
         options={{
           title: "Products",
           tabBarBadge: productCount > 0 ? productCount : undefined,
@@ -45,16 +45,10 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, size }) => <House size={size} color={color} />,
         }} />
 
-      <Tabs.Screen name="add"
+      <Tabs.Screen name="index"
         options={{
           title: "Add",
           tabBarIcon: ({ color, size }) => <CirclePlus size={size} color={color} />,
-        }} />
-
-      <Tabs.Screen name="[id]"
-        options={{
-          title: "Edit",
-          href: null,
         }} />
     </Tabs>
   );
