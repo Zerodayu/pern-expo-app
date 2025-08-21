@@ -2,7 +2,7 @@ import { useDeleteProduct } from "@/api/delProducts";
 import { Product, useGetProducts } from "@/api/getProducts";
 import { COLORS, PADDINGS, RADIUS, SIZE } from "@/themes";
 import { Link } from "expo-router";
-import { SquarePen, Trash } from "lucide-react-native";
+import { Image as Pic, SquarePen, Trash } from "lucide-react-native";
 import { useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -57,11 +57,19 @@ export default function Index() {
         {item.name}
       </Text>
       
-      <Image 
-        source={{ uri: item.image }} 
-        style={style.image}
-        resizeMode="cover"
-      />
+      <View style={style.imageContainer}>
+        <Image 
+          source={{ uri: item.image }} 
+          style={style.image}
+          resizeMode="cover"
+          onError={() => {
+            // Image failed to load, show fallback icon
+          }}
+        />
+        <View style={style.fallbackIcon}>
+          <Pic size={SIZE.xxl} color={COLORS.secondary} />
+        </View>
+      </View>
 
       <Text style={style.cardPrice}>
         ${item.price}
@@ -156,13 +164,29 @@ const style = StyleSheet.create({
     padding: PADDINGS.sm,
     elevation: 2,
   },
-  image: {
+  imageContainer: {
+    position: 'relative',
     width: "100%",
     height: 150,
-    outlineWidth: 1,
-    outlineColor: COLORS.secondary,
-    borderRadius: RADIUS.lg,
     backgroundColor: COLORS.secondary + "20",
+    borderRadius: RADIUS.lg,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    position: 'absolute',
+    width: "100%",
+    height: 150,
+    borderRadius: RADIUS.lg,
+    backgroundColor: 'transparent',
+  },
+  fallbackIcon: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: "100%",
+    height: 150,
+    zIndex: -1,
   },
   cardTitle: {
     fontWeight: "bold",
