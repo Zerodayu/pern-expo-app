@@ -222,7 +222,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.accent,
     padding: PADDINGS.md,
     borderRadius: RADIUS.xl,
     width: '90%',
@@ -261,9 +261,9 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: COLORS.muted,
+    backgroundColor: COLORS.background,
     borderWidth: 1,
-    borderColor: COLORS.secondary,
+    borderColor: COLORS.muted,
   },
   deleteButton: {
     backgroundColor: COLORS.destructive,
